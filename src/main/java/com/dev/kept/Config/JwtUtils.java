@@ -21,13 +21,25 @@ public class JwtUtils {
 
     public String generateToken(UserDetails userDetails){
         return Jwts.builder()
-        .setSubject(userDetails.getUsername())
+        .setSubject(((CustomUserDetails) userDetails).getUsername())
         .setIssuedAt( new Date())
         .setExpiration( new Date(System.currentTimeMillis() + EXPIRATION_TIME))
         .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()), SignatureAlgorithm.HS256).compact();
     }
 
-    // public String extractUsername(String token)
+    public String extractSubject(String token) {
+        return Jwts.parserBuilder()
+        .setSigningKey(jwtSecret.getBytes())
+        .build()
+        .parseClaimsJws(token)
+        .getBody()
+        .getSubject();
+    }
+
+    public boolean validateToken(String token, UserDetails userDetails) {
+        return extractSubject(token).equals(userDetails.getUsername());
+    }
+
 
 
 }
