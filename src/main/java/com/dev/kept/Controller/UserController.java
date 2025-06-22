@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dev.kept.Beans.User;
 import com.dev.kept.Service.UserService;
+import com.dev.kept.dto.UpdateUserRequest;
 
 @RestController
 @RequestMapping("/users")
@@ -49,4 +51,9 @@ public class UserController {
     public String deleteUserById(@PathVariable Long id){
         return userService.deleteUserById(id);
     }
+
+    @PatchMapping("/up/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest updateRequest) {
+    return userService.updateUserByID(id, updateRequest);
+}
 }

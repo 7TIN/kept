@@ -7,10 +7,12 @@ import org.springframework.stereotype.Service;
 
 import com.dev.kept.Beans.User;
 import com.dev.kept.Repository.UserRepository;
+import com.dev.kept.dto.UpdateUserRequest;
+import com.dev.kept.util.UpdateUtil;
 
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final UserRepository repo;
     
@@ -50,8 +52,12 @@ public class UserServiceImpl implements UserService{
         return "Deleted Successfully";
     }
 
-    
-    
-
-    
+    @Override
+    public ResponseEntity<?> updateUserByID(Long id, UpdateUserRequest updateRequest) {
+        return repo.findById(id).map(user -> {
+            UpdateUtil.copyNonNullProperties(updateRequest, user);
+            repo.save(user);
+            return ResponseEntity.ok(user);
+        }).orElse(ResponseEntity.notFound().build());
+    }
 }
