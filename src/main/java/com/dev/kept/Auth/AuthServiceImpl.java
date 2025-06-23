@@ -2,6 +2,8 @@ package com.dev.kept.Auth;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -10,6 +12,7 @@ import com.dev.kept.Beans.User;
 import com.dev.kept.Config.CustomUserDetails;
 import com.dev.kept.Config.JwtUtils;
 import com.dev.kept.Repository.UserRepository;
+import com.dev.kept.dto.AuthResponseDto;
 import com.dev.kept.dto.LoginRequestDto;
 import com.dev.kept.dto.RegisterRequestDto;
 
@@ -33,7 +36,18 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public ResponseEntity<?> login(LoginRequestDto request) {
 
-        return null;
+        Authentication authentication = authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                request.getEmail(), request.getPassword()
+            )
+        );
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        String token = jwtUtils.generateToken(userDetails);
+
+        AuthResponseDto response = new AuthResponseDto(token, userDetails.getUsername(), userDetails.getUsername());
+
+        return ResponseEntity.ok(response);
     }
 
     @Override
@@ -51,12 +65,15 @@ public class AuthServiceImpl implements AuthService{
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         userRepository.save(user);
+
         UserDetails userDetails = new CustomUserDetails(user);
 
         String token = jwtUtils.generateToken(userDetails);
-        return ResponseEntity.ok(new JwtResponse(token));
 
-        return null;
+        // AuthResponseDto response = new AuthResponseDto(token, user.getUsername(), user.getEmail());
+
+        return ResponseEntity.ok(token);
+
     }
 
 }
