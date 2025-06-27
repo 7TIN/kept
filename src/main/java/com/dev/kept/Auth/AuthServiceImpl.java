@@ -45,7 +45,7 @@ public class AuthServiceImpl implements AuthService{
 
         String token = jwtUtils.generateToken(userDetails);
 
-        AuthResponseDto response = new AuthResponseDto(token, userDetails.getUsername(), userDetails.getUsername());
+        AuthResponseDto response = new AuthResponseDto(token, null , null);
 
         return ResponseEntity.ok(response);
     }
@@ -66,13 +66,13 @@ public class AuthServiceImpl implements AuthService{
 
         userRepository.save(user);
 
-        UserDetails userDetails = new CustomUserDetails(user);
+        // UserDetails userDetails = new CustomUserDetails(user);
 
-        String token = jwtUtils.generateToken(userDetails);
+        // String token = jwtUtils.generateToken(userDetails);
 
         // AuthResponseDto response = new AuthResponseDto(token, user.getUsername(), user.getEmail());
 
-        return ResponseEntity.ok(token);
+        return ResponseEntity.ok("User Register sucessully");
 
     }
 
