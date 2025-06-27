@@ -7,6 +7,7 @@ import java.util.List;
 import com.dev.kept.enums.ExperienceType;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -33,7 +34,7 @@ public class InterviewExperience {
     @Enumerated(EnumType.STRING)
     private ExperienceType experienceType;
 
-    @Lob
+    @Column(columnDefinition = "text")
     private String summary;
 
     @ManyToOne(fetch = FetchType.LAZY)

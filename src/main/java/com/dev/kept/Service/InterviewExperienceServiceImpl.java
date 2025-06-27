@@ -62,7 +62,6 @@ public class InterviewExperienceServiceImpl implements InterviewExperienceServic
                       .collect(Collectors.toList());
     }
 
-    /* ---------- mapper ---------- */
     private InterviewExperienceResponseDto toDto(InterviewExperience exp) {
         InterviewExperienceResponseDto dto = new InterviewExperienceResponseDto();
         dto.setId(exp.getId());

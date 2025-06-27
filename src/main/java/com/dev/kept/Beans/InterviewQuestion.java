@@ -1,5 +1,6 @@
 package com.dev.kept.Beans;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -16,7 +17,7 @@ public class InterviewQuestion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Lob
+    @Column(name = "question_text", columnDefinition = "TEXT")
     private String questionText;
 
     private String type;
