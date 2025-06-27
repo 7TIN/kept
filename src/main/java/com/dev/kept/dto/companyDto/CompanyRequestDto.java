@@ -1,4 +1,4 @@
-package com.dev.kept.dto;
+package com.dev.kept.dto.companyDto;
 
 public class CompanyRequestDto {
     private String name;

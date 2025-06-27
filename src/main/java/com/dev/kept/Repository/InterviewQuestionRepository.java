@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.dev.kept.Beans.InterviewQuestion;
 
-public interface InterviewQuestionRepository extends JpaRepository<InterviewQuestion, Long> {
+public interface InterviewQuestionRepository
+        extends JpaRepository<InterviewQuestion, Long> {
 
-    List<InterviewQuestion> findByCompanyId(Long companyId);
-
+    List<InterviewQuestion> findByExperienceId(Long experienceId);
 }

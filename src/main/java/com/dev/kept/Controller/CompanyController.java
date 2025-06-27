@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dev.kept.Service.CompanyService;
-import com.dev.kept.dto.CompanyRequestDto;
-import com.dev.kept.dto.CompanyResponseDto;
+import com.dev.kept.dto.companyDto.CompanyRequestDto;
+import com.dev.kept.dto.companyDto.CompanyResponseDto;
 
 @RestController
 @RequestMapping("/companies")
