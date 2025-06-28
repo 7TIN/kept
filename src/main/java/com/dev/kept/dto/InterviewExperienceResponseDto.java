@@ -12,8 +12,17 @@ public class InterviewExperienceResponseDto {
     private String experienceType;
     private String summary;
     private String companyName;
+    private String interviewDate;
 
     private List<InterviewQuestionResponseDto> questions;
+
+    public String getInterviewDate() {
+        return interviewDate;
+    }
+
+    public void setInterviewDate(String interviewDate) {
+        this.interviewDate = interviewDate;
+    }
 
     public Long getId() {
         return id;

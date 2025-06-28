@@ -6,8 +6,8 @@ public class InterviewQuestionResponseDto {
     private String question;
     private String type;
     private String section;
-    private String companyName;
-    private String createdByUsername;
+    // private String companyName;
+    // private String createdByUsername;
     
     public Long getId() {
         return id;
@@ -33,16 +33,16 @@ public class InterviewQuestionResponseDto {
     public void setSection(String section) {
         this.section = section;
     }
-    public String getCompanyName() {
-        return companyName;
-    }
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
-    public String getCreatedByUsername() {
-        return createdByUsername;
-    }
-    public void setCreatedByUsername(String createdByUsername) {
-        this.createdByUsername = createdByUsername;
-    }
+    // public String getCompanyName() {
+    //     return companyName;
+    // }
+    // public void setCompanyName(String companyName) {
+    //     this.companyName = companyName;
+    // }
+    // public String getCreatedByUsername() {
+    //     return createdByUsername;
+    // }
+    // public void setCreatedByUsername(String createdByUsername) {
+    //     this.createdByUsername = createdByUsername;
+    // }
 }

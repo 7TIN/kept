@@ -1,5 +1,6 @@
 package com.dev.kept.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,8 +39,8 @@ public class InterviewExperienceServiceImpl implements InterviewExperienceServic
         exp.setExperienceType(ExperienceType.valueOf(dto.getExperienceType()));
         exp.setSummary(dto.getSummary());
         exp.setCompany(company);
+        exp.setInterviewDate(LocalDate.parse(dto.getInterviewDate()));
 
-        // map questions
         dto.getQuestions().forEach(q -> {
             InterviewQuestion iq = new InterviewQuestion();
             iq.setQuestionText(q.getQuestion());
@@ -70,6 +71,7 @@ public class InterviewExperienceServiceImpl implements InterviewExperienceServic
         dto.setExperienceType(exp.getExperienceType().name());
         dto.setSummary(exp.getSummary());
         dto.setCompanyName(exp.getCompany().getName());
+        dto.setInterviewDate(exp.getInterviewDate() != null ? exp.getInterviewDate().toString() : null);
 
         dto.setQuestions(
             exp.getQuestions().stream().map(q -> {
