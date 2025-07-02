@@ -15,7 +15,7 @@ import com.dev.kept.dto.InterviewExperienceRequestDto;
 import com.dev.kept.dto.InterviewExperienceResponseDto;
 
 @RestController
-@RequestMapping("/experiences")
+@RequestMapping("/api/experiences")
 public class InterviewExperienceController {
 
     private final InterviewExperienceService service;

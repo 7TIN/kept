@@ -12,7 +12,8 @@ public class InterviewExperienceRequestDto {
     private String summary;
     private Long companyId;
     private String interviewDate;
-
+    private List<InterviewQuestionRequestDto> questions;
+    
     public String getInterviewDate() {
         return interviewDate;
     }
@@ -21,7 +22,7 @@ public class InterviewExperienceRequestDto {
         this.interviewDate = interviewDate;
     }
 
-    private List<InterviewQuestionRequestDto> questions;
+    
 
     public String getTitle() {
         return title;
