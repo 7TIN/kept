@@ -4,7 +4,13 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.dev.kept.Beans.Company;
 import com.dev.kept.Beans.InterviewExperience;
@@ -23,10 +29,11 @@ public class InterviewExperienceServiceImpl implements InterviewExperienceServic
     private final InterviewExperienceRepository expRepo;
 
     public InterviewExperienceServiceImpl(CompanyRepository companyRepo,
-                                          InterviewExperienceRepository expRepo) {
+            InterviewExperienceRepository expRepo) {
         this.companyRepo = companyRepo;
-        this.expRepo     = expRepo;
+        this.expRepo = expRepo;
     }
+
 
     @Override
     public InterviewExperienceResponseDto addExperience(InterviewExperienceRequestDto dto) {
@@ -50,17 +57,35 @@ public class InterviewExperienceServiceImpl implements InterviewExperienceServic
             exp.getQuestions().add(iq);
         });
 
-
         InterviewExperience saved = expRepo.save(exp);
         return toDto(saved);
     }
 
+        public Page<InterviewExperienceResponseDto> getAllExperiences(int page, int size) {
+            Pageable pageable = PageRequest.of(page, size, Sort.by("interviewDate").descending());
+            return expRepo.findAll(pageable)
+                    .map(this::toDto);
+        }
+    
+    @Override
+    public Page<InterviewExperienceResponseDto> getRecent(int page, int size) {
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by("interviewDate").descending()
+        );
+
+        return expRepo.findAll(pageable)
+                      .map(this::toDto); 
+    }
+    
+
     @Override
     public List<InterviewExperienceResponseDto> getByCompany(Long companyId) {
         return expRepo.findByCompanyId(companyId)
-                      .stream()
-                      .map(this::toDto)
-                      .collect(Collectors.toList());
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
 
     private InterviewExperienceResponseDto toDto(InterviewExperience exp) {
@@ -74,15 +99,14 @@ public class InterviewExperienceServiceImpl implements InterviewExperienceServic
         dto.setInterviewDate(exp.getInterviewDate() != null ? exp.getInterviewDate().toString() : null);
 
         dto.setQuestions(
-            exp.getQuestions().stream().map(q -> {
-                InterviewQuestionResponseDto qdto = new InterviewQuestionResponseDto();
-                qdto.setId(q.getId());
-                qdto.setQuestion(q.getQuestionText());
-                qdto.setType(q.getType());
-                qdto.setSection(q.getSection());
-                return qdto;
-            }).collect(Collectors.toList())
-        );
+                exp.getQuestions().stream().map(q -> {
+                    InterviewQuestionResponseDto qdto = new InterviewQuestionResponseDto();
+                    qdto.setId(q.getId());
+                    qdto.setQuestion(q.getQuestionText());
+                    qdto.setType(q.getType());
+                    qdto.setSection(q.getSection());
+                    return qdto;
+                }).collect(Collectors.toList()));
         return dto;
     }
 }
