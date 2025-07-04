@@ -41,12 +41,16 @@ public class InterviewExperienceController {
     @GetMapping("/recent")
     public Page<InterviewExperienceResponseDto> recent(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "7") int size) {
-        return service.getRecent(page, size);
+            @RequestParam(defaultValue = "7") int size,
+            @RequestParam(required = false) String q,
+            @RequestParam(required = false)    String type) {
+        return service.getRecent(page, size, q, type);
     }
 
     //     @GetMapping("/recent")
     // public Page<InterviewExperienceResponseDto> getRecent(@RequestParam int page, @RequestParam int size) {
     //     return service.getRecent(page, size);
     // }
+
+    
 }

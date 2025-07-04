@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,7 +34,6 @@ public class InterviewExperienceServiceImpl implements InterviewExperienceServic
         this.companyRepo = companyRepo;
         this.expRepo = expRepo;
     }
-
 
     @Override
     public InterviewExperienceResponseDto addExperience(InterviewExperienceRequestDto dto) {
@@ -61,24 +61,46 @@ public class InterviewExperienceServiceImpl implements InterviewExperienceServic
         return toDto(saved);
     }
 
-        public Page<InterviewExperienceResponseDto> getAllExperiences(int page, int size) {
-            Pageable pageable = PageRequest.of(page, size, Sort.by("interviewDate").descending());
-            return expRepo.findAll(pageable)
-                    .map(this::toDto);
-        }
-    
-    @Override
-    public Page<InterviewExperienceResponseDto> getRecent(int page, int size) {
-        Pageable pageable = PageRequest.of(
-                page,
-                size,
-                Sort.by("interviewDate").descending()
-        );
-
+    public Page<InterviewExperienceResponseDto> getAllExperiences(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("interviewDate").descending());
         return expRepo.findAll(pageable)
-                      .map(this::toDto); 
+                .map(this::toDto);
     }
-    
+
+    // @Override
+    // public Page<InterviewExperienceResponseDto> getRecent(int page, int size) {
+    // Pageable pageable = PageRequest.of(
+    // page,
+    // size,
+    // Sort.by("interviewDate").descending()
+    // );
+
+    // return expRepo.findAll(pageable)
+    // .map(this::toDto);
+    // }
+
+    @Override
+    public Page<InterviewExperienceResponseDto> getRecent(
+            int page, int size, String keyword, String type) {
+
+        Pageable pageable = PageRequest.of(
+                page, size, Sort.by("interviewDate").descending());
+
+        // Start with an “all records” spec (conjunction)
+        Specification<InterviewExperience> spec = (root, query, cb) -> cb.conjunction();
+
+        if (keyword != null && !keyword.isBlank()) {
+            spec = spec.and((root, query, cb) -> cb.like(cb.lower(root.get("summary")),
+                    "%" + keyword.toLowerCase() + "%"));
+        }
+
+        if (type != null && !type.isBlank()) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("experienceType"), type));
+        }
+
+        return expRepo.findAll(spec, pageable)
+                .map(this::toDto);
+    }
 
     @Override
     public List<InterviewExperienceResponseDto> getByCompany(Long companyId) {
