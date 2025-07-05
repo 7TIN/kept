@@ -9,6 +9,7 @@ import com.dev.kept.Beans.Company;
 import com.dev.kept.Repository.CompanyRepository;
 import com.dev.kept.dto.companyDto.CompanyRequestDto;
 import com.dev.kept.dto.companyDto.CompanyResponseDto;
+import com.dev.kept.dto.companyDto.CompanyWithCountDto;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
@@ -23,8 +24,6 @@ public class CompanyServiceImpl implements CompanyService {
     public CompanyResponseDto addCompany(CompanyRequestDto dto) {
         Company company = new Company();
         company.setName(dto.getName());
-        // company.setLocation(dto.getLocation());
-        // company.setIndustry(dto.getIndustry());
 
         Company saved = repo.save(company);
 
@@ -34,8 +33,8 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public List<CompanyResponseDto> getAllCompanies() {
         return repo.findAll().stream()
-            .map(this::toDto)
-            .collect(Collectors.toList());
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -48,8 +47,28 @@ public class CompanyServiceImpl implements CompanyService {
         CompanyResponseDto dto = new CompanyResponseDto();
         dto.setId(company.getId());
         dto.setName(company.getName());
-        // dto.setLocation(company.getLocation());
-        // dto.setIndustry(company.getIndustry());
+
         return dto;
+    }
+
+    @Override
+    public List<CompanyResponseDto> search(String q) {
+        return repo
+                .findByNameContainingIgnoreCaseOrderByNameAsc(q.trim())
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public CompanyResponseDto addOrGet(String name) {
+        return repo.findByNameIgnoreCase(name)
+                .map(this::toDto)
+                .orElseGet(() -> addCompany(new CompanyRequestDto(name)));
+    }
+
+    @Override
+    public List<CompanyWithCountDto> getAllWithExperienceCount() {
+        return repo.findAllWithExperienceCount();
     }
 }

@@ -3,8 +3,6 @@ package com.dev.kept.dto.companyDto;
 public class CompanyResponseDto {
     private Long id;
     private String name;
-    // private String location;
-    // private String industry;
     public Long getId() {
         return id;
     }
