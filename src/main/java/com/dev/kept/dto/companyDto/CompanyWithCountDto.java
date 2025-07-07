@@ -15,4 +15,16 @@ public class CompanyWithCountDto {
     public Long getId() { return id; }
     public String getName() { return name; }
     public long getExperienceCount() { return experienceCount; }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setExperienceCount(long experienceCount) {
+        this.experienceCount = experienceCount;
+    }
 }

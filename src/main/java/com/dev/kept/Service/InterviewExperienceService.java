@@ -15,5 +15,5 @@ public interface InterviewExperienceService {
 
     // Page<InterviewExperience> findByCompanyId(Long companyId, Pageable pageable);
     // Page<InterviewExperience> findAll(Pageable pageable);
-    Page<InterviewExperienceResponseDto> getRecent(int page, int size, String q, String type);
+    Page<InterviewExperienceResponseDto> getRecent(int page, int size, String q, String type, String companyName);
 }
