@@ -44,8 +44,10 @@ public class InterviewExperienceController {
             @RequestParam(defaultValue = "7") int size,
             @RequestParam(required = false) String q,
             @RequestParam(required = false)    String type, 
-            @RequestParam(required=false) String company) {
-        return service.getRecent(page, size, q, type, company);
+            @RequestParam(required=false) String company,
+            @RequestParam(required=false) String position)
+             {
+        return service.getRecent(page, size, q, type, position, company);
     }
 
     //     @GetMapping("/recent")
