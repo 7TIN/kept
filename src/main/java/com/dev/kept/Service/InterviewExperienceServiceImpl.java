@@ -81,90 +81,93 @@ public class InterviewExperienceServiceImpl implements InterviewExperienceServic
 
     // @Override
     // public Page<InterviewExperienceResponseDto> getRecent(
-    //         int page, int size, String keyword, String type, String companyName) {
+    // int page, int size, String keyword, String type, String companyName) {
 
-    //     Pageable pageable = PageRequest.of(
-    //             page, size, Sort.by("interviewDate").descending());
+    // Pageable pageable = PageRequest.of(
+    // page, size, Sort.by("interviewDate").descending());
 
-    //     // Start with an “all records” spec (conjunction)
-    //     Specification<InterviewExperience> spec = (root, query, cb) -> cb.conjunction();
+    // // Start with an “all records” spec (conjunction)
+    // Specification<InterviewExperience> spec = (root, query, cb) ->
+    // cb.conjunction();
 
-    //     // if (keyword != null && !keyword.isBlank()) {
-    //     // spec = spec.and((root, query, cb) -> cb.like(cb.lower(root.get("summary")),
-    //     // "%" + keyword.toLowerCase() + "%"));
-    //     // }
+    // // if (keyword != null && !keyword.isBlank()) {
+    // // spec = spec.and((root, query, cb) ->
+    // cb.like(cb.lower(root.get("summary")),
+    // // "%" + keyword.toLowerCase() + "%"));
+    // // }
 
-    //     // if (type != null && !type.isBlank()) {
-    //     // spec = spec.and((root, query, cb) -> cb.equal(root.get("experienceType"),
-    //     // type));
-    //     // }
+    // // if (type != null && !type.isBlank()) {
+    // // spec = spec.and((root, query, cb) -> cb.equal(root.get("experienceType"),
+    // // type));
+    // // }
 
-    //     if (keyword != null && !keyword.isBlank()) {
-    //         spec = spec.and((root, q, cb) -> cb.or(
-    //                 cb.like(cb.lower(root.get("summary")), "%" + keyword.trim().toLowerCase() + "%"),
-    //                 cb.like(cb.lower(root.get("title")), "%" + keyword.trim().toLowerCase() + "%")));
-    //     }
-
-    //     /* --- type = TECHNICAL | HR | MR -------------------------------- */
-    //     if (type != null && !type.isBlank()) {
-    //         spec = spec.and((root, q, cb) -> cb.equal(root.get("experienceType"), type));
-    //     }
-
-    //     /* --- filter by company name (case‑insensitive) ----------------- */
-    //     if (companyName != null && !companyName.isBlank()) {
-    //         spec = spec.and((root, q, cb) -> {
-    //             var join = root.join("company"); // interviewExperience → company
-    //             return cb.equal(
-    //                     cb.lower(join.get("name")),
-    //                     companyName.trim().toLowerCase());
-    //         });
-    //     }
-
-    //     return expRepo.findAll(spec, pageable)
-    //             .map(this::toDto);
+    // if (keyword != null && !keyword.isBlank()) {
+    // spec = spec.and((root, q, cb) -> cb.or(
+    // cb.like(cb.lower(root.get("summary")), "%" + keyword.trim().toLowerCase() +
+    // "%"),
+    // cb.like(cb.lower(root.get("title")), "%" + keyword.trim().toLowerCase() +
+    // "%")));
     // }
 
+    // /* --- type = TECHNICAL | HR | MR -------------------------------- */
+    // if (type != null && !type.isBlank()) {
+    // spec = spec.and((root, q, cb) -> cb.equal(root.get("experienceType"), type));
+    // }
+
+    // /* --- filter by company name (case‑insensitive) ----------------- */
+    // if (companyName != null && !companyName.isBlank()) {
+    // spec = spec.and((root, q, cb) -> {
+    // var join = root.join("company"); // interviewExperience → company
+    // return cb.equal(
+    // cb.lower(join.get("name")),
+    // companyName.trim().toLowerCase());
+    // });
+    // }
+
+    // return expRepo.findAll(spec, pageable)
+    // .map(this::toDto);
+    // }
 
     @Override
-public Page<InterviewExperienceResponseDto> getRecent(
-        int page, int size, String keyword, String type, String position, String companyName) {
+    public Page<InterviewExperienceResponseDto> getRecent(
+            int page, int size, String keyword, String type, String position, String companyName) {
 
-    Pageable pageable = PageRequest.of(
-            page, size, Sort.by("interviewDate").descending());
+        Pageable pageable = PageRequest.of(
+                page, size, Sort.by("interviewDate").descending());
 
-    Specification<InterviewExperience> spec = (root, query, cb) -> cb.conjunction();
+        Specification<InterviewExperience> spec = (root, query, cb) -> cb.conjunction();
 
-    if (keyword != null && !keyword.isBlank()) {
-        spec = spec.and((root, q, cb) -> cb.or(
-            cb.like(cb.lower(root.get("summary")), "%" + keyword.trim().toLowerCase() + "%"),
-            cb.like(cb.lower(root.get("title")), "%" + keyword.trim().toLowerCase() + "%")
-        ));
+        if (keyword != null && !keyword.isBlank()) {
+            String[] words = keyword.trim().toLowerCase().split("\\s+");
+            for (String word : words) {
+                spec = spec.and((root, q, cb) -> cb.or(
+                        cb.like(cb.lower(root.get("summary")), "%" + word + "%"),
+                        cb.like(cb.lower(root.get("title")), "%" + word + "%")));
+            }
+        }
+
+        if (type != null && !type.isBlank()) {
+            spec = spec.and((root, q, cb) -> cb.equal(root.get("experienceType"), type));
+        }
+
+        // Filter by position (case-insensitive, partial match)
+        if (position != null && !position.isBlank()) {
+            spec = spec.and((root, q, cb) -> cb.like(cb.lower(root.get("position")),
+                    "%" + position.trim().toLowerCase() + "%"));
+        }
+
+        if (companyName != null && !companyName.isBlank()) {
+            spec = spec.and((root, q, cb) -> {
+                var join = root.join("company");
+                return cb.equal(
+                        cb.lower(join.get("name")),
+                        companyName.trim().toLowerCase());
+            });
+        }
+
+        return expRepo.findAll(spec, pageable)
+                .map(this::toDto);
     }
-
-    if (type != null && !type.isBlank()) {
-        spec = spec.and((root, q, cb) ->
-            cb.equal(root.get("experienceType"), type));
-    }
-
-    // Filter by position (case-insensitive, partial match)
-    if (position != null && !position.isBlank()) {
-        spec = spec.and((root, q, cb) ->
-            cb.like(cb.lower(root.get("position")), "%" + position.trim().toLowerCase() + "%")
-        );
-    }
-
-    if (companyName != null && !companyName.isBlank()) {
-        spec = spec.and((root, q, cb) -> {
-            var join = root.join("company");
-            return cb.equal(
-                    cb.lower(join.get("name")),
-                    companyName.trim().toLowerCase());
-        });
-    }
-
-    return expRepo.findAll(spec, pageable)
-            .map(this::toDto);
-}
 
     @Override
     public List<InterviewExperienceResponseDto> getByCompany(Long companyId) {
