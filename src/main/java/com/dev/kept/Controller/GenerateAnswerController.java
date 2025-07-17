@@ -7,7 +7,7 @@ import com.dev.kept.Service.AiService;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/ai")
+@RequestMapping("/api/ai")
 public class GenerateAnswerController {
 
     private final AiService AiService;

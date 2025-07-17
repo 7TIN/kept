@@ -17,7 +17,7 @@ import io.jsonwebtoken.security.Keys;
 public class JwtUtils {
 
     @Value("${jwt.secret}")
-    private String jwtSecret;                     // Base64 string from properties
+    private String jwtSecret;                    
 
     private static final long EXPIRATION_TIME = 1800000; // 30 min
 
