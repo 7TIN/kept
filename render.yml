@@ -1,0 +1,28 @@
+services:
+  # This service is your Spring Boot backend
+  - type: web
+    name: kept-backend
+    env: java
+    plan: free
+    buildCommand: "./mvnw clean package -DskipTests"
+    startCommand: "java -jar target/kept-0.0.1-SNAPSHOT.jar"
+    healthCheckPath: /welcome # Uses your WelcomeController for health checks
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DATABASE_URL
+        fromDatabase:
+          name: kept-db 
+          property: connectionString
+      # These are your secrets. You will set them in the Render Dashboard later.
+      - key: JWT_SECRET_PROD
+        sync: false
+      - key: TOGETHER_API_KEY_PROD
+        sync: false
+      - key: CLIENT_URL_PROD
+        sync: false
+
+databases:
+  # This tells Render about the database service
+  - name: kept-db
+    plan: free
